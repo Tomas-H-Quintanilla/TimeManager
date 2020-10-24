@@ -1,0 +1,108 @@
+<style>
+    #filedrag {
+        display: none;
+        font-weight: bold;
+        text-align: center;
+        padding: 1em 0;
+        margin: 1em 0;
+        color: #555;
+        border: 2px dashed #555;
+        border-radius: 7px;
+        cursor: default;
+    }
+    
+    #filedrag.hover {
+        color: #f00;
+        border-color: #f00;
+        border-style: solid;
+        box-shadow: inset 0 3px 4px #888;
+    }
+</style>
+<div class="m-5">
+
+
+    <div class="ui-grid-d ui-responsive">
+        <div class="ui-block-a">
+            <input type='button' class="ui-body ui-body-d btn" value="Task content">
+            <div class="ui-grid-a ui-responsive">
+
+                <input type='button' class="ui-body ui-body-d btn" value="&#9654">
+
+
+
+            </div>
+        </div>
+        <div class="ui-block-b">
+            <input type='button' class="ui-body ui-body-d btn" value="Project name">
+            <div class="ui-grid-a ui-responsive">
+                <div class="ui-block-a">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9664">
+                </div>
+                <div class="ui-block-b">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9654">
+                </div>
+
+
+            </div>
+        </div>
+        <div class="ui-block-c">
+            <input type='button' class="ui-body ui-body-d btn" value="Date">
+            <div class="ui-grid-a ui-responsive">
+                <div class="ui-block-a">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9664">
+                </div>
+                <div class="ui-block-b">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9654">
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="ui-block-d">
+            <input type='button' class="ui-body ui-body-d btn" value="Hours">
+            <div class="ui-grid-a ui-responsive">
+                <div class="ui-block-a">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9664">
+                </div>
+                <div class="ui-block-b">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9654">
+                </div>
+
+
+            </div>
+        </div>
+        <div class="ui-block-e">
+            <input type='button' class="ui-body ui-body-d btn" value="Minutes">
+            <div class="ui-grid-a ui-responsive">
+                <div class="ui-block-a">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9664">
+                </div>
+                <div class="ui-block-b">
+                    <input type='button' class="ui-body ui-body-d btn" value="&#9654">
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="div-input-image-file">
+        <input type="file" id="input-file-now" style="visibility:visible;opacity:0" />
+    </div>
+
+
+
+
+    <!-- /grid-d -->
+
+    <div data-role="navbar" class="ui-content">
+        <ul>
+            <li><a class="mr-2  border rounded" href="/index/cron" target="_top">Crono </a></li>
+            <li><a class="mr-2  border rounded" href="/index/manual">Manual</a></li>
+            <li><a class="mr-2 border rounded ui-btn-active" target="_top">File</a></li>
+            <!-- <li><a class="mr-2 border rounded" href="#">File</a></li> -->
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+{% extends "timetracker/layout.html" %} {% block body %}
+<div class="ui-grid-a">
+    <div class="ui-block-a">
+
+        {% include 'timetracker/forms/form_project.html' %}
+
+    </div>
+
+    <div class="ui-block-b">
+        <h4 class="text-center m-2">
+            Your projects
+        </h4>
+        <div class="projects_list">
+
+            <ul data-role="listview" data-inset="true">
+                {% if projects_manager%}
+                <li data-role="list-divider">Projects as a manger</li>
+                {%endif%} {% for project in projects_manager%}
+                <li>
+                    <a href="/edit_project/{{project.id}}" target="_top">
+                        <h5>{{project.name}}</h5>
+                        <p>{{project.manager}}</p>
+                    </a>
+
+                </li>
+
+                {%endfor%} {% if projects%}
+                <li data-role="list-divider">Projects as a worker</li>
+                {%endif%} {% for project in projects%}
+                <li>
+                    <a href="/edit_project/{{project.project.id}}" target="_top">
+                        <h5>{{project.project.name}}</h5>
+                        <p>{{project.project.manager}}</p>
+                    </a>
+
+                </li>
+
+                {%endfor%}
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

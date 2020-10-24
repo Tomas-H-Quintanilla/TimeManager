@@ -1,0 +1,72 @@
+<div class="row">
+    <div class="col-8">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="ui-field-contain">
+                    <label class="text-center" for="task_content">Task</label>
+                    <textarea name="task_content"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="ui-field-contain">
+                    <label class="text-center" for="project_name">Project</label>
+                    <select name="project_name">
+                        <option selected="selected"></option>
+                        {% for project in projects_manager%}
+                            <option>{{  project.project.name}}</option>
+
+                        {%endfor%} 
+                        {% for project in projects%}
+                        <option>{{ project.project.name}}</option>
+
+                    {%endfor%} 
+                    </select>
+                </div>
+            </div>
+
+        </form>
+        <div class="form-group mx-auto my-4" style="max-width: 200px;">
+            <button onclick="saveTask()" data-operation="cron">Save</button>
+        </div>
+
+
+
+    </div>
+    <div class="col-3 text-center">
+        <button onclick="changeCron();">
+            <h1>
+                <time id="clock" data-time="0" data-action="change">00:00:00</time>
+            </h1>
+        </button>
+        <div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a p-2 ">
+
+                    <button onclick="changeCron();" data-role="none" data-action="play" class="btn btn-success btn-lg">▶</button>
+                </div>
+                <div class="ui-block-b p-2 ">
+
+                    <button onclick="changeCron();" data-role="none" data-action="pause" class="btn btn-danger btn-lg">| |</button>
+                </div>
+
+            </div>
+            <div class="p-2">
+                <button onclick="changeCron();" data-action="reset">Reset</button>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+<div data-role="navbar" class="ui-content m-5">
+    <ul>
+        <li><a class="mr-2  border rounded  rounded">Crono </a></li>
+        <li><a class="mr-2 border rounded" href="/index/manual" target="_top">Manual</a></li>
+        <li><a class="mr-2 border rounded " href="/index/file" target="_top">File</a></li>
+        <!-- <li><a class="mr-2 border rounded" href="#">File</a></li> -->
+    </ul>
+</div>

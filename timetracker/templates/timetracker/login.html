@@ -1,0 +1,23 @@
+{% extends "timetracker/layout.html" %} {% block body %}
+<div class="mx-auto my-5" style="max-width: 800px;">
+    <h2 class="m-5 text-center">Login</h2>
+
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <div class="mx-auto my-5" style="max-width: 300px;">
+            <input class="btn btn-primary" type="submit" value="Login">
+        </div>
+    </form>
+
+    Don't have an account? <a href="{% url 'register' %}" target="_top">Register here.</a>
+</div>{% endblock %}

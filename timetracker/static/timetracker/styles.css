@@ -1,0 +1,17 @@
+.ui-content {
+    padding: 0%;
+}
+
+.tasks_done {
+    height: 40vh;
+    overflow: scroll;
+}
+
+.projects_list {
+    height: 60vh;
+    overflow: scroll;
+}
+
+#loadOverlay {
+    display: none;
+}

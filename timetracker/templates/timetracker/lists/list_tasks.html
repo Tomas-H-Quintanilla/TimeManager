@@ -1,0 +1,49 @@
+<h4 class="text-center m-2">
+    Total hours:
+</h4>
+<div class="tasks_done">
+
+    <ul data-role="listview" data-split-icon="gear" data-split-theme="a" data-inset="true" id="listview_tasks">
+        {% for task in tasks%}
+        <li>
+
+            <a href="/edit_task/{{task.id}}">
+
+                <h1>{{task.project.project.name}}</h1>
+                <p><strong>{{task.task_content}}</strong></p>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+
+                        <p>{{task.date}}</p>
+                    </div>
+                    <div class="ui-block-b ">
+
+                        <p>{{task.time_used}}</p>
+                    </div>
+
+                </div>
+
+
+            </a>
+
+        </li>
+        {% endfor %}
+
+    </ul>
+</div>
+
+<!-- <div class="ml-4">
+    Prev 1 Next
+</div> -->
+{% if not project%}
+<div data-role="navbar" class="ui-content m-3">
+    <ul>
+        <li><a class="mr-1 ui-btn-active border rounded" onclick="getTasks();">Today</a></li>
+        <li><a class="mr-1 border rounded" onclick="getTasks();">Week</a></li>
+        <li><a class="mr-1 border rounded" onclick="getTasks();">Month</a></li>
+        <li><a class="mr-1 border rounded" onclick="getTasks();">Year</a></li>
+        <li><a class="mr-1  border rounded" onclick="getTasks();">Total </a></li>
+    </ul>
+</div>
+{%endif%}
+</div>

@@ -1,0 +1,18 @@
+{% extends "timetracker/layout.html" %} {% block body %}
+<div class="ui-grid-a">
+    <div class="ui-block-a">
+        {% if message%}
+        <p>
+            {{message}}
+        </p>
+        {%endif%} {%if manual%} {% include 'timetracker/forms/form_manual.html' %} {%endif%} {%if cron%}{% include 'timetracker/forms/form_cron.html' %} {%endif%} {%if file%}{% include 'timetracker/forms/form_file.html' %} {%endif%}
+    </div>
+    <div class="ui-block-b">
+        {% include 'timetracker/lists/list_tasks.html' %}
+    </div>
+</div>
+<!-- /grid-a -->
+
+
+
+{% endblock %}

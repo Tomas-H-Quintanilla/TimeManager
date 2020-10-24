@@ -1,0 +1,64 @@
+<div class="m-5">
+    <form>
+        {% csrf_token %}
+        <div class="form-group ">
+            <div class="ui-field-contain">
+                <label class="text-left" for="task_content">Task</label>
+                <textarea name="task_content"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="ui-field-contain">
+                <label class="text-left" for="project_name">Project</label>
+                <select name="project_name">
+                    <option selected="selected"></option>
+                    {% for project in projects_manager%}
+                        <option>{{ project.project.name}}</option>
+
+                    {%endfor%} 
+                    {% for project in projects%}
+                    <option>{{ project.project.name}}</option>
+
+                {%endfor%} 
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="ui-field-contain">
+                <label class="text-left" for="date">Date</label>
+                <input type="date" name="date">
+            </div>
+        </div>
+
+        <div class="form-group mx-auto my-3" style="max-width: 200px;">
+
+            <div class="ui-grid-b">
+
+                <div class="ui-block-a text-center" style="max-width:80px !important;margin-left:16%; ">
+                    <label for="hours">Hours</label>
+                    <input type="number" name="hours">
+                </div>
+                <div class="ui-block-b text-center" style="max-width:80px !important;margin-left:16%; ">
+                    <label for="minutes">Minutes</label>
+                    <input type="number" name="minutes">
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </form>
+    <div class="form-group mx-auto my-4" style="max-width: 200px;">
+        <button onclick="saveTask();" data-operation="manual"> Save</button>
+    </div>
+    <div data-role="navbar" class="ui-content">
+        <ul>
+            <li><a class="mr-2  border rounded" href="/index/cron" target="_top">Crono </a></li>
+            <li><a class="mr-2 ui-btn-active border rounded" href="#">Manual</a></li>
+            <li><a class="mr-2 border rounded" href="/index/file" target="_top">File</a></li>
+            <!-- <li><a class="mr-2 border rounded" href="#">File</a></li> -->
+        </ul>
+    </div>
+</div>

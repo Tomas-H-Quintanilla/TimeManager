@@ -1,0 +1,69 @@
+{% extends "timetracker/layout.html" %} {% block body %}
+<div class="mx-auto my-5" style="max-width: 800px;">
+    <h2 class="m-5 text-center">Edit task</h2>
+
+    <form>
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="ui-field-contain">
+                <label class="text-left" for="project_name">Project</label>
+                <select name="project_name" value="{{task.project.project.name}}">
+                    <option selected="selected">{{task.project.project.name}}</option>
+                    {% for project in projects_manager%}
+                        {% if project.name != task.project.project.name %}
+                            <option>{{ project.name}}</option>
+                        {%endif%}
+
+                    {%endfor%} 
+                    {% for project in projects%}
+                        {% if project.project.name != task.project.project.name %}
+                            <option>{{ project.project.name}}</option>
+                        {%endif%}
+
+                    {%endfor%} 
+                </select>
+            </div>
+        </div>
+        <div class="form-group ">
+            <div class="ui-field-contain">
+                <label class="text-left" for="task_content">Task</label>
+                <textarea name="task_content" value="{{task.task_content}}">{{task.task_content}}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="ui-field-contain">
+                <label class="text-left" for="date">Date</label>
+                <input type="date" name="date" value="{{date_formated}}">
+            </div>
+        </div>
+
+        <div class="form-group mx-auto my-3" style="max-width: 200px;">
+
+            <div class="ui-grid-b">
+
+                <div class="ui-block-a text-center" style="max-width:80px !important;margin-left:16%; ">
+                    <label for="hours">Hours</label>
+                    <input type="number" name="hours" value="{{task.hours}}">
+                </div>
+                <div class="ui-block-b text-center" style="max-width:80px !important;margin-left:16%; ">
+                    <label for="minutes">Minutes</label>
+                    <input type="number" name="minutes" value="{{task.minutes}}">
+                </div>
+
+            </div>
+
+
+        </div>
+    </form>
+    <div class="ui-grid-a">
+        <div class="ui-block-a p-2 ">
+
+            <button onclick="editTask();" data-taskid="{{task.id}}" data-option="save">Save</button>
+        </div>
+        <div class="ui-block-b p-2 ">
+
+            <button onclick="editTask();" data-taskid="{{task.id}}" data-option="delete">Delete</button>
+        </div>
+
+    </div>
+</div>{% endblock %}

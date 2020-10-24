@@ -1,0 +1,78 @@
+<div class="m-5">
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group ">
+            <div class="ui-field-contain">
+                <label class="text-left">Project name</label>
+                <input id="project_name" type="text" placeholder="Project name">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="ui-field-contain">
+                <label class="text-left">Add member</label>
+                <select>   
+                    <option selected="selected"></option>
+                    {% for user in users %}
+                        {% if user.disabled%}
+                        <option id="option-{{ user.username}}" disabled onclick="choosen();">{{user.username}}</option>
+                        {%else%}
+                        <option id="option-{{ user.username}}" onclick="choosen();">{{user.username}}</option>
+                        {%endif%}
+                    {%endfor%}
+
+                </select>
+            </div>
+        </div>
+
+        <div class="tasks_done">
+
+            <ol id="project_members" data-role="listview" data-inset="true">
+                <li data-role="list-divider">Manager</li>
+                {% if project %}
+                <li data-icon="delete" style="font-weight: bold;" data-manager="true">
+                    <h1>{{ project.project.manager}} </h1>
+                </li>
+                {%else%}
+                <li data-icon="delete" style="font-weight: bold;" data-manager="true">
+                    <h1>{{request.user}}</h1>
+                </li>
+                {%endif%}
+                <li data-role="list-divider">Members</li>
+                {% if project %} {% for worker in workers%} {% if project.project.manager == request.user %}
+                <li class="ui-li-has-alt ui-last-child">
+                    {%else%}
+                    <li class="ui-li">
+                        {%endif%}
+                        <a class="ui-btn">
+                        {{ worker.worker.username}}
+                    </a>{% if project.project.manager == request.user %}
+                        <a class="ui-icon-delete ui-btn ui-btn-icon-notext ui-icon-carat-r" data-member="option-{{ worker.worker.username}}" onclick="delete_member();">
+                        </a>
+                        {%endif%}
+                    </li>
+                    {%endfor%} {%endif%}
+
+            </ol>
+
+
+        </div>
+
+    </form>
+    <div class="ui-grid-a">
+
+        {%if project%} {%if project.project.manager == request.user%}
+        <div class="ui-block-a p-2 ">
+
+            <button type="button" data-projectid="{{project.project.id}}" onclick="editProject();" data-option="delete">Delete</button>
+        </div>
+        <div class="ui-block-b p-2 ">
+
+            <button type="button" data-projectid="{{project.project.id}}" onclick="editProject();" data-option="save">Save</button>
+        </div>
+        {%endif%} {%else%}
+        <button type="button" onclick="save_project();" data-option="save">Save</button> {%endif%}
+
+
+    </div>
+</div>
