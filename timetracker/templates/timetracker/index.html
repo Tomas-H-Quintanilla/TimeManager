@@ -1,4 +1,4 @@
-{% extends "timetracker/layout.html" %} {% block body %}
+{% extends "timetracker/layout.html" %} {% load static %}{% block body %}
 <div class="ui-grid-a">
     <div class="ui-block-a">
         {% if message%}
@@ -13,6 +13,9 @@
 </div>
 <!-- /grid-a -->
 
+{% endblock %} {% block additionalScripts %} {% if file %}
 
-
-{% endblock %}
+<script src="{% static 'timetracker/customJS/formFile.js' %}"></script>
+{%endif%} {% if cron %}
+<script src="{% static 'timetracker/customJS/formCron.js' %}"></script>
+{%endif%} {% endblock %}

@@ -41,17 +41,15 @@
                 <li data-role="list-divider">Members</li>
                 {% if project %} {% for worker in workers%} {% if project.project.manager == request.user %}
                 <li class="ui-li-has-alt ui-last-child">
-                    {%else%}
-                    <li class="ui-li">
-                        {%endif%}
-                        <a class="ui-btn">
+                    {%else%} {%endif%}
+                    <a class="ui-btn">
                         {{ worker.worker.username}}
                     </a>{% if project.project.manager == request.user %}
-                        <a class="ui-icon-delete ui-btn ui-btn-icon-notext ui-icon-carat-r" data-member="option-{{ worker.worker.username}}" onclick="delete_member();">
-                        </a>
-                        {%endif%}
-                    </li>
-                    {%endfor%} {%endif%}
+                    <a class="ui-icon-delete ui-btn ui-btn-icon-notext ui-icon-carat-r" data-member="option-{{ worker.worker.username}}" onclick="delete_member();">
+                    </a>
+                    {%endif%}
+
+                </li> {%endfor%} {%endif%}
 
             </ol>
 
@@ -71,7 +69,7 @@
             <button type="button" data-projectid="{{project.project.id}}" onclick="editProject();" data-option="save">Save</button>
         </div>
         {%endif%} {%else%}
-        <button type="button" onclick="save_project();" data-option="save">Save</button> {%endif%}
+        <button type="button" onclick="saveProject();" data-option="save">Save</button> {%endif%}
 
 
     </div>

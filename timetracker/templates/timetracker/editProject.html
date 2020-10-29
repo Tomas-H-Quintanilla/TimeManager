@@ -1,4 +1,4 @@
-{% extends "timetracker/layout.html" %} {% block body %}
+{% extends "timetracker/layout.html" %} {% load static %}{% block body %}
 <h1 class="text-center p-2">Information about project {{ project.project.name}}</h1>
 <div class="ui-grid-a">
     <div class="ui-block-a">
@@ -11,5 +11,9 @@
     </div>
 
 </div>
+
+{% endblock %} {% block additionalScripts %}
+
+<script src="{% static 'timetracker/customJS/project.js' %}"></script>
 
 {% endblock %}

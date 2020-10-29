@@ -3,15 +3,18 @@
 <html lang="es">
 
 <head>
-    <link href="{% static 'timetracker/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css' %}" rel="stylesheet">
-    <link href="{% static 'timetracker/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css' %}" rel="stylesheet">
-    <link href="{% static 'timetracker/bootstrap.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'timetracker/styles.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'timetracker/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'timetracker/jquery.mobile-1.4.5/jquery.mobile.icons-1.4.5.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'timetracker/bootstrap.min.css' %}" rel="stylesheet">
 
-    <link href="{% static 'timetracker/styles.css' %}" rel="stylesheet">
+
     <script src="{% static 'timetracker/jquery.min.jsm.js' %}"></script>
     <!-- <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> -->
     <script src="{% static 'timetracker/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js' %}"></script>
-    <script src="{% static 'timetracker/index.js' %}"></script>
+    <script src="{% static 'timetracker/customJS/index.js' %}"></script>
+
+
 </head>
 
 <body>
@@ -22,8 +25,8 @@
             <h1 class="text-center " onclick="window.open('index','_top')"> Time manager</h1>
 
             {% if user.is_authenticated%}
+            <h3 class="text-center text-white"><a class="text-white" href="#"> {{request.user}}</a></h3>
             <div class="text-center text-white">
-                <a class="mr-5 text-white" href="#"> {{request.user}}</a>
                 <a class="text-white" href="{% url 'logout' %}" target="_top"> Log out</a>
             </div>
             {% else%} {% if not login%}
@@ -35,9 +38,9 @@
         {% if not login%}
         <div data-role="navbar" class="ui-content p-0">
             <ul>
-                <li><a class="ui-btn-active" href="{% url 'index' %}" target="_top">Tasks</a></li>
+                <li><a href="{% url 'index' %}" target="_top">Tasks</a></li>
                 <li><a href="{% url 'project' %}" target="_top">Projects</a></li>
-                <!-- <li><a href="#">Profile</a></li> -->
+                <li><a href="{% url 'profile' %}" target="_top">Profile</a></li>
             </ul>
         </div>
         <!-- /navbar -->
@@ -46,7 +49,7 @@
 
 </body>
 
-
+{% block additionalScripts%}{% endblock %}
 
 
 

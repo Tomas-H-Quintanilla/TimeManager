@@ -15,3 +15,16 @@
 #loadOverlay {
     display: none;
 }
+
+.div-input-image-file {
+    height: 25vh;
+    background-color: lightgray;
+    background-image: url("/static/timetracker/images/drop-files.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    border: dashed darkgray 3px;
+}
+
+.div-input-image-file:hover {
+    border: dashed blue 5px;
+}

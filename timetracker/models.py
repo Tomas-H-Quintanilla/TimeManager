@@ -3,6 +3,8 @@ from django.db import models
 
 # Create your models here.
 class User(AbstractUser):
+    name=models.CharField(max_length=128,default='')
+    surname=models.CharField(max_length=128,default='')
     pass
 
 class Project(models.Model):
