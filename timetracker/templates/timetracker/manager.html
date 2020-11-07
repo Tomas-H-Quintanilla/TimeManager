@@ -1,0 +1,66 @@
+{% extends "timetracker/layout.html" %} {% load static %}{% block body %}
+<div class="text-center m-2">
+    <div class="ui-grid-a">
+        <div class="ui-block-a">
+            <h3>Workers</h3>
+            <div style='height:35vh;overflow:scroll'>
+                <ul data-role="listview" data-inset="true" id='workers'>
+                    {% for worker in workers%}
+
+                    <li onclick='choosen();' data-choosen="False">
+                        {{worker.username}}
+                    </li>
+                    {%endfor%}
+                </ul>
+            </div>
+
+        </div>
+        <div class="ui-block-b">
+            <h3> Projects</h3>
+            <div style='height:35vh;overflow:scroll'>
+                <ul data-role="listview" data-inset="true" id='projects'>
+                    {% for project in projects%}
+                    <li onclick='choosen();' data-choosen="False">
+                        {{project.name}}
+                    </li>
+                    {%endfor%}
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="ui-grid-a">
+
+        <div class=" ui-field-contain ui-block-a p-2">
+            <div id='dateMessage' style='color:red;margin-bottom:3px;display:none' class='text-left mx-4'>
+
+            </div>
+            <label style='width:12%;' for="date1">From</label>
+            <input type="date" name="date1">
+            <br>
+            <br>
+            <label style='width:12%' for="date2">To</label>
+            <input type="date" name="date2">
+        </div>
+        <div class=" ui-block-b ">
+            <div data-role="navbar" class="ui-content m-3">
+                <ul>
+                    <li><a class="mr-1 ui-btn-active border rounded" onclick="getTasks();">Today</a></li>
+                    <li><a class="mr-1 border rounded" onclick="getTasks();">Week</a></li>
+                    <li><a class="mr-1 border rounded" onclick="getTasks();">Month</a></li>
+                    <li><a class="mr-1 border rounded" onclick="getTasks();">Year</a></li>
+                    <li><a class="mr-1  border rounded" onclick="getTasks();">Total </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <button onclick='downloadTasks();'>Download</button>
+
+
+</div>
+{% endblock %} {% block additionalScripts %}
+<script defer="defer" src="{% static 'timetracker/customJS/manager.js' %}"></script>
+{% endblock %}

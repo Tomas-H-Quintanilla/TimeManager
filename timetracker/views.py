@@ -13,6 +13,8 @@ from datetime import datetime
 from datetime import date
 from django.core.paginator import Paginator
 import time
+from modules.extra_functions import *
+
 # Create your views here.
 
 def index(request,type_input="cron"):
@@ -441,3 +443,86 @@ def modify_profile(request):
         
     else:
         return HttpResponseRedirect(reverse("login"))
+
+def download_tasks(request):
+    if request.user.is_authenticated:
+        if request.method != "POST":
+            return JsonResponse({"status": 403}, status=403)
+        data=json.loads(request.body)
+        date_str=data['date'].lower()
+        if 'workers' in data:
+            
+            dates=False
+            
+            if data['date1']:
+                    d1 = datetime.strptime(data['date1'], "%Y-%m-%d").date()
+                    d2 = datetime.strptime(data['date2'], "%Y-%m-%d").date()
+                    dates=True
+            else:
+                filter_date=datetime.fromtimestamp(time.time()-3600*7*24*365*2000)
+                if date_str=="today":
+                    filter_date=date.today()
+                elif date_str=="week":
+                    filter_date=datetime.fromtimestamp(time.time()-3600*7*24)
+                elif date_str=="month":
+                    filter_date=datetime.fromtimestamp(time.time()-3600*24*30)
+                elif date_str=="year":
+                   filter_date=datetime.fromtimestamp(time.time()-3600*7*24*365)
+            
+            lines_workers=[]
+            for worker in data['workers']:
+                if dates:
+                    tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=(d1),date__lte=d2).order_by("-date")
+                else:
+                    tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=filter_date).order_by("-date")
+                lines_workers=transform_tasks_csv(tasks_tmp,lines_workers)
+                            
+            lines_projects=[]
+            for project in data['projects']:
+                if dates:
+                    tasks_tmp=Task.objects.filter(project__project__name=project,date__gte=(d1),date__lte=d2).order_by("-date")
+                else:
+                    tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=filter_date).order_by("-date")
+                lines_projects=transform_tasks_csv(tasks_tmp,lines_projects)
+            
+
+
+                    
+                
+            return JsonResponse({"status": 200,'projects':lines_projects,'workers':lines_workers,'title_workers':f'tasks_workers_{datetime.now().strftime("%d_%m_%Y")}.csv','title_projects':f'tasks_projects_{datetime.now().strftime("%d_%m_%Y")}.csv'}, status=200)
+        
+          
+        else:
+        
+            if date_str=="today":
+                tasks=Task.objects.filter(project__worker=request.user,date=date.today()).order_by("-date")
+            elif date_str=="week":
+                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24))).order_by("-date")
+            elif date_str=="month":
+                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*24*30))).order_by("-date")
+            elif date_str=="year":
+                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24*365))).order_by("-date")
+            else:
+                tasks=Task.objects.filter(project__worker=request.user).order_by("-date")
+        
+        
+            lines=transform_tasks_csv(tasks)
+        
+            return JsonResponse({"status": 200,'data':lines,'title':f'tasks_{request.user.username}_{date_str}.csv'}, status=200)
+        
+    else:
+        return HttpResponseRedirect(reverse("login"))
+
+def manager(request):
+    if request.user.is_superuser:
+        
+        projects=Project.objects.all()
+        workers=User.objects.all()
+        
+        return render(request, "timetracker/manager.html",{
+            'workers':workers,
+            'projects':projects
+        })    
+        
+    else:
+        return HttpResponseRedirect(reverse("profile"))

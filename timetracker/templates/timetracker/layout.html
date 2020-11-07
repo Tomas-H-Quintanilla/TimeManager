@@ -25,10 +25,18 @@
             <h1 class="text-center " onclick="window.open('index','_top')"> Time manager</h1>
 
             {% if user.is_authenticated%}
-            <h3 class="text-center text-white"><a class="text-white" href="#"> {{request.user}}</a></h3>
-            <div class="text-center text-white">
-                <a class="text-white" href="{% url 'logout' %}" target="_top"> Log out</a>
-            </div>
+            <h3 class="text-center text-white"><a class="text-white" href="{% url 'profile' %}" target="_top"> {{request.user}}</a></h3>
+
+
+
+            <h5 class="text-center">
+
+                <a class="text-center text-white" href="{% url 'logout' %}" target="_top"> Log out</a> {% if user.is_superuser %}
+                <a class="ml-4 text-center text-white" href="{% url 'manager' %} " target="_top">Manager Screen</a> {%endif%}
+
+            </h5>
+
+
             {% else%} {% if not login%}
             <div class="text-center text-white">
                 <a class="mr-5 text-white" href="{% url 'login' %}" target="_top"> Log in</a>

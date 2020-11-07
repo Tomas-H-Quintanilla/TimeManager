@@ -3,14 +3,25 @@
     <div class="ui-block-a">
 
         {% include 'timetracker/forms/form_profile.html' %}
-
-
     </div>
 
     <div class="ui-block-b">
         {% include 'timetracker/lists/list_projects.html' %}
-
+        <div data-role="navbar" class="ui-content m-3">
+            <ul>
+                <li><a class="mr-1 ui-btn-active border rounded">Today</a></li>
+                <li><a class="mr-1 border rounded">Week</a></li>
+                <li><a class="mr-1 border rounded">Month</a></li>
+                <li><a class="mr-1 border rounded">Year</a></li>
+                <li><a class="mr-1  border rounded">Total </a></li>
+            </ul>
+        </div>
+        <button onclick="downloadTasks();">Download tasks done</button>
     </div>
 </div>
+
+{% endblock %} {% block additionalScripts %}
+
+<script src="{% static 'timetracker/customJS/profile.js' %}"></script>
 
 {% endblock %}

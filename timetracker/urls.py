@@ -20,5 +20,7 @@ urlpatterns = [
     path("manage_task",views.manage_task,name="manage_task"),
     path("manage_project",views.manage_project,name="manage_project"),
     path("profile",views.profile_view,name="profile"),
-    path("modify_profile",views.modify_profile,name="modify_profile")
+    path("modify_profile",views.modify_profile,name="modify_profile"),
+    path("download_tasks",views.download_tasks,name="download_tasks"),
+    path("manager",views.manager,name="manager")
 ]
