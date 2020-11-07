@@ -35,15 +35,21 @@
 <!-- <div class="ml-4">
     Prev 1 Next
 </div> -->
-{% if not project%}
 <div data-role="navbar" class="ui-content m-3">
-    <ul>
-        <li><a class="mr-1 ui-btn-active border rounded" onclick="getTasks();">Today</a></li>
-        <li><a class="mr-1 border rounded" onclick="getTasks();">Week</a></li>
-        <li><a class="mr-1 border rounded" onclick="getTasks();">Month</a></li>
-        <li><a class="mr-1 border rounded" onclick="getTasks();">Year</a></li>
-        <li><a class="mr-1  border rounded" onclick="getTasks();">Total </a></li>
-    </ul>
+
+    {%if project%}
+    <ul data-projectid='{{project.project.id}}'>
+        {%else%}
+        <ul>
+            {%endif%}
+
+
+            <li><a class="mr-1 ui-btn-active border rounded" onclick="getTasks();">Today</a></li>
+            <li><a class="mr-1 border rounded" onclick="getTasks();">Week</a></li>
+            <li><a class="mr-1 border rounded" onclick="getTasks();">Month</a></li>
+            <li><a class="mr-1 border rounded" onclick="getTasks();">Year</a></li>
+            <li><a class="mr-1  border rounded" onclick="getTasks();">Total </a></li>
+
+        </ul>
 </div>
-{%endif%}
 </div>

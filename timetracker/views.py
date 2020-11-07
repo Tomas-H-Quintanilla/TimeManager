@@ -223,19 +223,18 @@ def task_list(request):
     if request.user.is_authenticated:
         if request.method != "POST":
             return JsonResponse({"status": 403}, status=403)
-        date_filter=json.loads(request.body)['body'].lower()
-
-
-        if date_filter=="today":
-            tasks=Task.objects.filter(project__worker=request.user,date=date.today()).order_by("-date")
-        elif date_filter=="week":
-            tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24))).order_by("-date")
-        elif date_filter=="month":
-            tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*24*30))).order_by("-date")
-        elif date_filter=="year":
-            tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24*365))).order_by("-date")
+        data=json.loads(request.body)
+        filter_date=getDataFilter(data['date'].lower())
+        
+        if data['projectid']:
+            project=UserProjects.objects.get(worker=request.user,project__id=data['projectid'])
+            if project.manager:
+                tasks=Task.objects.filter(project__project__manager=request.user,project__project__id=data['projectid'],date__gte=(filter_date)).order_by("-date")
+            else:
+                tasks=Task.objects.filter(project__worker=request.user,project__project__id=data['projectid'],date__gte=(filter_date)).order_by("date")
         else:
-            tasks=Task.objects.filter(project__worker=request.user).order_by("-date")
+            tasks=Task.objects.filter(project__worker=request.user,date__gte=(filter_date)).order_by("-date")
+            
             
         tasks_array=[]
         for task in tasks:
@@ -280,13 +279,13 @@ def edit_project(request,project_id):
         project=UserProjects.objects.get(worker=request.user,project__id=project_id)
         workers=UserProjects.objects.filter(project__id=project_id).exclude(worker=request.user)
         users=User.objects.exclude(username=request.user.username)
+        
+        filter_date=getDataFilter('today')
         if project.manager:
-            tasks=Task.objects.filter(project__project__id=project_id).order_by("date")
+            tasks=Task.objects.filter(project__project__id=project_id,date__gte=(filter_date)).order_by("date")
         else:
-            tasks=Task.objects.filter(project__worker=request.user,project__project__id=project_id).order_by("date")
+            tasks=Task.objects.filter(project__worker=request.user,project__project__id=project_id,date__gte=(filter_date)).order_by("date")
         
-        
-
         for task in tasks:
             if task.date:
                 task.date=task.date.strftime("%d/%m/%Y")
@@ -450,6 +449,7 @@ def download_tasks(request):
             return JsonResponse({"status": 403}, status=403)
         data=json.loads(request.body)
         date_str=data['date'].lower()
+        filter_date=getDataFilter(date_str)
         if 'workers' in data:
             
             dates=False
@@ -458,17 +458,7 @@ def download_tasks(request):
                     d1 = datetime.strptime(data['date1'], "%Y-%m-%d").date()
                     d2 = datetime.strptime(data['date2'], "%Y-%m-%d").date()
                     dates=True
-            else:
-                filter_date=datetime.fromtimestamp(time.time()-3600*7*24*365*2000)
-                if date_str=="today":
-                    filter_date=date.today()
-                elif date_str=="week":
-                    filter_date=datetime.fromtimestamp(time.time()-3600*7*24)
-                elif date_str=="month":
-                    filter_date=datetime.fromtimestamp(time.time()-3600*24*30)
-                elif date_str=="year":
-                   filter_date=datetime.fromtimestamp(time.time()-3600*7*24*365)
-            
+                
             lines_workers=[]
             for worker in data['workers']:
                 if dates:
@@ -485,25 +475,19 @@ def download_tasks(request):
                     tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=filter_date).order_by("-date")
                 lines_projects=transform_tasks_csv(tasks_tmp,lines_projects)
             
-
-
-                    
-                
             return JsonResponse({"status": 200,'projects':lines_projects,'workers':lines_workers,'title_workers':f'tasks_workers_{datetime.now().strftime("%d_%m_%Y")}.csv','title_projects':f'tasks_projects_{datetime.now().strftime("%d_%m_%Y")}.csv'}, status=200)
-        
-          
+            
         else:
-        
-            if date_str=="today":
-                tasks=Task.objects.filter(project__worker=request.user,date=date.today()).order_by("-date")
-            elif date_str=="week":
-                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24))).order_by("-date")
-            elif date_str=="month":
-                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*24*30))).order_by("-date")
-            elif date_str=="year":
-                tasks=Task.objects.filter(project__worker=request.user,date__gte=(datetime.fromtimestamp(time.time()-3600*7*24*365))).order_by("-date")
+            
+            if 'projectid' in data:
+                project=UserProjects.objects.get(worker=request.user,project__id=data['projectid'])
+                if project.manager:
+                    tasks=Task.objects.filter(project__project__manager=request.user,project__project__id=data['projectid'],date__gte=(filter_date)).order_by("-date")
+                else:
+                    tasks=Task.objects.filter(project__worker=request.user,project__project__id=data['projectid'],date__gte=(filter_date)).order_by("date")
             else:
-                tasks=Task.objects.filter(project__worker=request.user).order_by("-date")
+                tasks=Task.objects.filter(project__worker=request.user,date__gte=(filter_date)).order_by("-date")
+
         
         
             lines=transform_tasks_csv(tasks)

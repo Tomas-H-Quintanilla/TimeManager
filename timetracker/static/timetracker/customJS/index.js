@@ -20,10 +20,16 @@ function getCSRF() {
 
 function getTasks() {
     const option = event.target.textContent;
+
+    let projectid = false;
+    if (event.target.parentNode.parentNode.dataset.projectid) {
+        projectid = event.target.parentNode.parentNode.dataset.projectid;
+    }
     fetch("/task_list", {
             method: 'POST',
             body: JSON.stringify({
-                body: option
+                date: option,
+                projectid: projectid
 
             }),
             headers: {

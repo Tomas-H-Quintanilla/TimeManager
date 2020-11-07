@@ -7,8 +7,18 @@
 
 
     <div class="ui-block-b">
-        {% include 'timetracker/lists/list_tasks.html' %}
+        <div>
+
+            {% include 'timetracker/lists/list_tasks.html' %}
+
+
+            <button data-projectid='{{project.project.id}}' onclick="downloadTasks();">Download tasks done</button>
+        </div>
+
+
     </div>
+
+</div>
 
 </div>
 
