@@ -21,7 +21,9 @@ If you are not the manager of the project, you will be able to download the info
 You have three options if you want to enter tasks:
 
 1 - Use a cronometer starting and pausing it when you want to measure the time you spent on a task.
+
 2 - Use the manual approach, entering the date that the task is gonna be registered and the time spent on it.
+
 3 - Use the file option. You can upload a csv file, in which the files requested by the form shall be separated by "," and the dates must have the format dd/mm/YYYY or dd-mm-YYYY
 
 Once you enter a task, you will be able to see it on the right part of the screen, using the different time filters to view the tasks. If you click on a task you can edit the stored information about it.
