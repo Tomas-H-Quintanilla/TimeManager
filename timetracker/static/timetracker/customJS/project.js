@@ -9,7 +9,7 @@ function editProject() {
             if (members[i].dataset.manager) {
                 data.manager = members[i].textContent.trim();
             } else {
-                project_members.push(members[i].textContent);
+                project_members.push(members[i].textContent.trim());
             }
         }
     }
@@ -17,8 +17,6 @@ function editProject() {
     data.name = document.querySelector("#project_name").value;
     data.projectid = event.target.dataset.projectid;
     data.option = event.target.dataset.option;
-
-
     if (document.querySelector("#project_name").value.trim() === "" && event.target.dataset.option != "delete") {
 
         alert("One of the required fields is empty.");
@@ -86,7 +84,6 @@ function saveProject() {
             .then(data => {
 
                 if (data.status === 200) {
-
                     window.location.reload();
                 }
 

@@ -42,48 +42,59 @@ function getTasks() {
             document.getElementById("listview_tasks").innerHTML = "";
             data.data.forEach(element => {
 
-                const project_name = document.createElement("h1");
-                const contentWrap = document.createElement("p");
-                const content = document.createElement("strong");
-                const list_element = document.createElement("li");
+                if (element.time_used == 'Total') {
+                    document.getElementById('total_hours').textContent = 'Total hours: ' + element.total_hours;
+                } else {
 
-                const wrapper = document.createElement("a");
-                wrapper.href = "/edit_task/" + element.id;
 
-                const list_split = document.createElement("div");
-                list_split.classList.add("ui-grid-a");
 
-                const list_split1 = document.createElement("div");
-                const list_split2 = document.createElement("div");
-                list_split1.classList.add("ui-block-a");
-                list_split2.classList.add("ui-block-b");
+                    const project_name = document.createElement("h1");
+                    project_name.style.fontSize = '20px';
 
-                const date_h1 = document.createElement("p");
-                const time_h1 = document.createElement("p");
+                    const contentWrap = document.createElement("h1");
+                    contentWrap.style.fontSize = '18px';
+                    contentWrap.style.fontWeight = '500';
+                    const list_element = document.createElement("li");
 
-                date_h1.textContent = element.date;
-                time_h1.textContent = element.time_used;
-                project_name.textContent = element.project_name;
-                content.textContent = element.task_content;
+                    const wrapper = document.createElement("a");
+                    wrapper.href = "/edit_task/" + element.id;
 
-                list_split1.append(date_h1);
-                list_split2.append(time_h1);
+                    const list_split = document.createElement("div");
+                    list_split.classList.add("ui-grid-a");
 
-                list_split.append(list_split1);
-                list_split.append(list_split2);
+                    const list_split1 = document.createElement("div");
+                    const list_split2 = document.createElement("div");
+                    list_split1.classList.add("ui-block-a");
+                    list_split2.classList.add("ui-block-b");
 
-                contentWrap.append(content);
+                    const date_h1 = document.createElement("h1");
+                    const time_h1 = document.createElement("h1");
+                    date_h1.style.fontWeight = time_h1.style.fontWeight = 'Normal';
 
-                wrapper.append(project_name);
+                    date_h1.textContent = element.date;
+                    time_h1.textContent = element.time_used;
+                    project_name.textContent = element.project_name;
+                    contentWrap.textContent = element.task_content;
 
-                wrapper.append(contentWrap);
-                wrapper.append(list_split);
+                    list_split1.append(date_h1);
+                    list_split2.append(time_h1);
 
-                list_element.appendChild(wrapper);
+                    list_split.append(list_split1);
+                    list_split.append(list_split2);
 
-                $("#listview_tasks").append(list_element);
-                $("#listview_tasks").listview("refresh");
-                console.log($("#listview_tasks"));
+
+
+                    wrapper.append(project_name);
+
+                    wrapper.append(contentWrap);
+                    wrapper.append(list_split);
+
+                    list_element.appendChild(wrapper);
+
+                    $("#listview_tasks").append(list_element);
+                    $("#listview_tasks").listview("refresh");
+
+                }
 
             });
         }).catch(error => {

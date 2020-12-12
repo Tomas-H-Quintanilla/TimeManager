@@ -10,12 +10,14 @@
     <div class="ui-block-b">
         {% include 'timetracker/lists/list_tasks.html' %}
     </div>
+    {% if login%}
+    <script src="{% static 'timetracker/customJS/formCron.js' %}"></script>{%endif%}
 </div>
 <!-- /grid-a -->
 
-{% endblock %} {% block additionalScripts %} {% if file %}
+{% endblock %} {% block additionalScripts %}{% if not login%} {% if file %}
 
 <script src="{% static 'timetracker/customJS/formFile.js' %}"></script>
 {%endif%} {% if cron %}
 <script src="{% static 'timetracker/customJS/formCron.js' %}"></script>
-{%endif%} {% endblock %}
+{%endif%}{%endif%} {% endblock %}

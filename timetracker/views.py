@@ -30,32 +30,42 @@ def index(request,type_input="cron"):
 
         tasks=Task.objects.filter(project__worker=request.user,date=date.today()).order_by("-date")
         
+        total_minutes=0
+        
         for task in tasks:
             if task.date:
                 task.date=task.date.strftime("%d/%m/%Y")
             if task.minutes:
                 task.time_used=str(int(task.minutes/60))+"h "+str(int(task.minutes%60))+"m"
             
+            total_minutes=int(task.minutes)+total_minutes
         
+        total_hours=round(float(total_minutes/60),2)
         projects_manager=UserProjects.objects.filter(worker=request.user,manager=True,activated=True)
         projects=UserProjects.objects.filter(worker=request.user,manager=False,activated=True)
         
-        cron=(type_input=="cron")
+        cron=(type_input=="cron" or type_input=='login')
         manual=(type_input=="manual") 
-        file_type= (type_input=="file") 
-        
+        file_type= (type_input=="file")
+        login_used=(type_input=="login")
+
         return render(request,"timetracker/index.html",{
+            "total_hours":total_hours,
             "tasks":tasks,
             "projects":projects,
             "projects_manager":projects_manager,
             "manual":manual,
             "cron": cron,
+            'login':login_used,
             "file":file_type
         })
     else:
         return HttpResponseRedirect(reverse("login"))
 @csrf_exempt
 def login_view(request):
+    
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index",args=['login']))
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -66,7 +76,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("index",args=['login']))
         else:
             return render(request, "timetracker/login.html", {
                 "message": "Invalid username and/or password.",
@@ -115,7 +125,7 @@ def project_view(request):
     if request.user.is_authenticated:
         users=User.objects.exclude(username=request.user.username)
         projects_manager=Project.objects.filter(manager=request.user)
-        projects=UserProjects.objects.filter(worker=request.user,manager=False)
+        projects=UserProjects.objects.filter(worker=request.user,manager=False,activated=True)
         return render(request, "timetracker/projects.html",{
                 "projects_manager":projects_manager,
                 "projects":projects,
@@ -148,11 +158,13 @@ def project(request):
     
 @csrf_exempt
 def insert_task(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated :
         if request.method != "POST":
             return JsonResponse({"status": 403}, status=403)
         
         data=json.loads(request.body)['body']
+        
+
         
         if data['type']=='csv':
             valid_data=False
@@ -172,28 +184,31 @@ def insert_task(request):
                             count=count+1
                             
                         objects_insert.append(object_insert)
-                        
-            for object_task in objects_insert:
-                user_project=UserProjects.objects.get(worker=request.user,project__name=object_insert['project'].strip())
-                
-                if not object_insert['hours'].strip():
-                    object_insert['hours']='0'
-                if not object_insert['minutes'].strip():
-                    object_insert['minutes']='0'
-                
-                
-                
-                minutes=int(float(object_insert['hours'])*60)+int(object_insert['minutes'])
-                
-                object_insert['date']=object_insert['date'].replace("/","-")
-                if not len(object_insert['date'].split("-")[0])==4:
-                    date_frags=object_insert['date'].split("-")
-                    
-                    object_insert['date']="-".join((date_frags[2],date_frags[1],date_frags[0]))
-                
-                task=Task(project=user_project,task_content=object_insert['task'],minutes=minutes,date=object_insert['date'].replace("/","-"))
-                task.save()
             
+                
+            for object_task in objects_insert:
+                if UserProjects.objects.filter(worker=request.user,project__name=object_insert['project'].strip(),activated=True).exists():
+                    user_project=UserProjects.objects.get(worker=request.user,project__name=object_insert['project'].strip())
+                    
+                    if not object_insert['hours'].strip():
+                        object_insert['hours']='0'
+                    if not object_insert['minutes'].strip():
+                        object_insert['minutes']='0'
+                    
+                    
+                    
+                    minutes=int(float(object_insert['hours'])*60)+int(object_insert['minutes'])
+                    
+                    object_insert['date']=object_insert['date'].replace("/","-")
+                    if not len(object_insert['date'].split("-")[0])==4:
+                        date_frags=object_insert['date'].split("-")
+                        
+                        object_insert['date']="-".join((date_frags[2],date_frags[1],date_frags[0]))
+                    
+                    task=Task(project=user_project,task_content=object_insert['task'],minutes=minutes,date=object_insert['date'].replace("/","-"))
+                    print('HOLA')
+                    task.save()
+    
             if not valid_data:
                 
                 return JsonResponse({"status": 412}, status=412)
@@ -208,11 +223,12 @@ def insert_task(request):
                 return JsonResponse({"status": 412}, status=412)
             minutes_number=int(minutes)
             
-            user_project=UserProjects.objects.get(worker=request.user,project__name=project_name)
+            if UserProjects.objects.filter(worker=request.user,project__name=project_name,activated=True).exists():
+                user_project=UserProjects.objects.get(worker=request.user,project__name=project_name)
             
             
-            task=Task(project=user_project,task_content=content,minutes=minutes_number,date=date)
-            task.save()
+                task=Task(project=user_project,task_content=content,minutes=minutes_number,date=date)
+                task.save()
             
         return JsonResponse({"status": 200}, status=200)
     else:
@@ -233,9 +249,9 @@ def task_list(request):
             else:
                 tasks=Task.objects.filter(project__worker=request.user,project__project__id=data['projectid'],date__gte=(filter_date)).order_by("date")
         else:
-            tasks=Task.objects.filter(project__worker=request.user,date__gte=(filter_date)).order_by("-date")
+            tasks=Task.objects.filter(project__worker=request.user,date__gte=(filter_date),project__activated=True).order_by("-date")
             
-            
+        total_minutes=0
         tasks_array=[]
         for task in tasks:
             task_serial={}
@@ -244,9 +260,13 @@ def task_list(request):
             task_serial['project_name']=task.project.project.name
             task_serial['task_content']=task.task_content
             task_serial['id']=task.id
+            total_minutes=total_minutes+int(task.minutes)
             tasks_array.append(task_serial)
-
         
+        task_serial={}
+        task_serial['time_used']='Total'
+        task_serial['total_hours']=str(round(float(total_minutes/60),2))
+        tasks_array.append(task_serial)
         return JsonResponse({"status": 200,"data":tasks_array}, status=200)
     else:
         return JsonResponse({"status": 401}, status=401)
@@ -277,7 +297,7 @@ def edit_project(request,project_id):
     if request.user.is_authenticated and UserProjects.objects.filter(worker=request.user,project__id=project_id).exists():
         
         project=UserProjects.objects.get(worker=request.user,project__id=project_id)
-        workers=UserProjects.objects.filter(project__id=project_id).exclude(worker=request.user)
+        workers=UserProjects.objects.filter(project__id=project_id,activated=True).exclude(worker=request.user)
         users=User.objects.exclude(username=request.user.username)
         
         filter_date=getDataFilter('today')
@@ -320,6 +340,9 @@ def manage_task(request):
     if request.user.is_authenticated:
         if request.method != "POST":
             return JsonResponse({"status": 403}, status=403)
+
+            
+        
         
         data=json.loads(request.body)['body']
         print(data)
@@ -330,8 +353,11 @@ def manage_task(request):
         content=data["task_content"].strip()
         date=data["date"].strip()
         minutes=data["minutes"]
+        
+
         user_project=UserProjects.objects.get(worker=request.user,project__name=project_name)
         minutes_number=int(minutes)
+        
         
         if data["option"]=="delete":
             Task.objects.filter(project__worker=request.user,id=data["taskid"]).delete()
@@ -368,7 +394,22 @@ def manage_project(request):
             Task.objects.filter(project__project__manager=request.user,project__project__id=data["projectid"]).delete()
         elif data["option"]=="save":
             Project.objects.filter(manager=request.user,id=data["projectid"]).update(name=project_name)
-            UserProjects.objects.filter(project__manager=request.user,project__id=data["projectid"]).update(activated=False)
+            
+            data_projects=UserProjects.objects.filter(project__manager=request.user,project__id=data["projectid"])
+            workers_in_projects=[]
+            for worker_project in data_projects:
+                workers_in_projects.append(worker_project.worker.username)
+                if worker_project.worker.username not in data["members"] and worker_project.worker.username!=request.user.username:
+                    UserProjects.objects.filter(project__manager=request.user,project__id=data["projectid"],id=worker_project.id).update(activated=False)
+                elif worker_project.worker.username in data["members"] and worker_project.worker.username!=request.user.username:
+                    UserProjects.objects.filter(project__manager=request.user,project__id=data["projectid"],id=worker_project.id).update(activated=True)
+            for worker in data['members']:
+                if worker not in workers_in_projects:
+                    user_project=UserProjects(project=Project.objects.get(manager=request.user,id=data["projectid"]),worker=User.objects.get(username=worker),manager=False)
+                    user_project.save()
+                
+            
+        
         else:
             return JsonResponse({"status": 500}, status=500)
             
@@ -380,7 +421,7 @@ def profile_view(request):
     if request.user.is_authenticated:
         users=User.objects.exclude(username=request.user.username)
         projects_manager=Project.objects.filter(manager=request.user)
-        projects=UserProjects.objects.filter(worker=request.user,manager=False)
+        projects=UserProjects.objects.filter(worker=request.user,manager=False,activated=True)
         return render(request, "timetracker/profile.html",{
                 "projects_manager":projects_manager,
                 "projects":projects,
@@ -466,14 +507,22 @@ def download_tasks(request):
                 else:
                     tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=filter_date).order_by("-date")
                 lines_workers=transform_tasks_csv(tasks_tmp,lines_workers)
-                            
-            lines_projects=[]
+            
+            
+            if lines_workers:
+                lines_workers.insert(0,'Project Name,Task Content,Date,Hours,Minutes,Username \n')         
+            lines_projects=[
+                
+            ]
             for project in data['projects']:
                 if dates:
                     tasks_tmp=Task.objects.filter(project__project__name=project,date__gte=(d1),date__lte=d2).order_by("-date")
                 else:
                     tasks_tmp=Task.objects.filter(project__worker__username=worker,date__gte=filter_date).order_by("-date")
                 lines_projects=transform_tasks_csv(tasks_tmp,lines_projects)
+                
+            if lines_projects:
+                lines_projects.insert(0,'Project Name,Task Content,Date,Hours,Minutes,Username')
             
             return JsonResponse({"status": 200,'projects':lines_projects,'workers':lines_workers,'title_workers':f'tasks_workers_{datetime.now().strftime("%d_%m_%Y")}.csv','title_projects':f'tasks_projects_{datetime.now().strftime("%d_%m_%Y")}.csv'}, status=200)
             

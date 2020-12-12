@@ -155,7 +155,7 @@ function sendFilesData() {
         })
         .then(data => {
             if (data.status === 200) {
-
+                window.location.reload();
 
             }
 

@@ -60,7 +60,17 @@ async function timer() {
 
 function changeCron() {
 
-    switch (event.target.dataset.action) {
+    let parent = event.target;
+
+    if (!parent.dataset.action) {
+        while (parent.tagName != 'BUTTON') {
+            parent = parent.parentNode;
+
+        }
+    }
+
+
+    switch (parent.dataset.action) {
         case "play":
             if (!cron.runState) {
                 cron.runState = true;
@@ -72,10 +82,12 @@ function changeCron() {
             break;
         case "reset":
             cron.reset();
+            cron.runState = false;
             break;
         case "change":
             const state = !cron.runState;
-            if (!cron.runState && state) {
+            console.log(state);
+            if (state) {
                 cron.runState = true;
                 timer();
             } else {

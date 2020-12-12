@@ -1,5 +1,5 @@
 <h4 class="text-center m-2">
-    Total hours:
+    Tasks done
 </h4>
 <div class="tasks_done">
 
@@ -9,16 +9,16 @@
 
             <a href="/edit_task/{{task.id}}">
 
-                <h1>{{task.project.project.name}}</h1>
-                <p><strong>{{task.task_content}}</strong></p>
+                <h1 style='font-size: 20px;'>{{task.project.project.name}}</h1>
+                <h1 style='font-size: 18px;font-weight:500'>{{task.task_content}}</h1>
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
 
-                        <p>{{task.date}}</p>
+                        <h1 style='font-weight: normal;'>{{task.date}}</h1>
                     </div>
                     <div class="ui-block-b ">
 
-                        <p>{{task.time_used}}</p>
+                        <h1 style='font-weight: normal;'>{{task.time_used}}</h1>
                     </div>
 
                 </div>
@@ -30,8 +30,11 @@
         {% endfor %}
 
     </ul>
-</div>
 
+</div>
+<h4 class='mt-3 ml-3 ' id='total_hours'>
+    Total hours: {{total_hours}}
+</h4>
 <!-- <div class="ml-4">
     Prev 1 Next
 </div> -->
