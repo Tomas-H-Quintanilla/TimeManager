@@ -40,7 +40,7 @@ def index(request,type_input="cron"):
             
             total_minutes=int(task.minutes)+total_minutes
         
-        total_hours=round(float(total_minutes/60),2)
+        total_hours=str(round(float(total_minutes/60),2))
         projects_manager=UserProjects.objects.filter(worker=request.user,manager=True,activated=True)
         projects=UserProjects.objects.filter(worker=request.user,manager=False,activated=True)
         
@@ -305,13 +305,15 @@ def edit_project(request,project_id):
             tasks=Task.objects.filter(project__project__id=project_id,date__gte=(filter_date)).order_by("date")
         else:
             tasks=Task.objects.filter(project__worker=request.user,project__project__id=project_id,date__gte=(filter_date)).order_by("date")
-        
+        total_minutes=0
         for task in tasks:
             if task.date:
                 task.date=task.date.strftime("%d/%m/%Y")
             if task.minutes:
                 task.time_used=str(int(task.minutes/60))+"h "+str(int(task.minutes%60))+"m"
-        
+                total_minutes=total_minutes+int(task.minutes)
+                
+        total_hours=str(round(float(total_minutes/60),2))
         workers_list_compare=[]
         
         for worker in workers:
@@ -328,7 +330,8 @@ def edit_project(request,project_id):
             "manager":project.manager,
             "users":final_users,
             "workers":workers,
-            "tasks":tasks
+            "tasks":tasks,
+            "total_hours":total_hours
         })
     elif request.user.is_authenticated:
         return HttpResponseRedirect(reverse("project"))
